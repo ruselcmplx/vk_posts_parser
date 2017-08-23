@@ -93,5 +93,5 @@ def statistics(count):
 
 
 #statistics(1)
-p = get_posts(1)
-download_pic(next(iter(p.values())))
+#p = get_posts(1)
+#download_pic(next(iter(p.values())))
