@@ -9,6 +9,7 @@ ACCESS_TOKEN = '88af5ea888af5ea888af5ea82a88f2a4d4888af88af5ea8d1322cecc0b538ff6
 OWNER_ID = '91709075'
 POSTS_HUNDREDS_COUNT = 106
 URL_TEMPLATE = 'https://api.vk.com/method/wall.get?owner_id=-{owner_id}&offset={offset}&count=100&access_token={access_token}&v=V'
+DESTINATION_FOLDER = 'c:/filthy_pics'
 
 post_objs = {}
 
@@ -30,7 +31,7 @@ class Post():
 
 def download_pic(post):
     file_b = Request.urlopen(post.get_url()).read()
-    filepath = os.path.join('c:/filthy_pics', str(post.get_id()) + '.jpg')
+    filepath = os.path.join(DESTINATION_FOLDER, str(post.get_id()) + '.jpg')
     with open(filepath, 'wb') as file:
         file.write(file_b)
         file.close()
