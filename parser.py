@@ -1,6 +1,7 @@
 import urllib.request as Request
 import json
 import time
+import os.path
 
 
 START_TIME = time.time()
@@ -12,18 +13,27 @@ URL_TEMPLATE = 'https://api.vk.com/method/wall.get?owner_id=-{owner_id}&offset={
 post_objs = {}
 
 class Post():
-    def __init__(self, post_id, post_img, likes_count):
+    def __init__(self, post_id, img_url, likes_count):
         self.post_id = post_id
-        self.post_img = post_img
+        self.img_url = img_url
         self.likes_count = likes_count
 
+    def get_id(self):
+        return self.post_id
 
-    def get_picture():
-        return self.post_img
+    def get_url(self):
+        return self.img_url
 
-
-    def get_likes_count():
+    def get_likes_count(self):
         return self.likes_count
+
+
+def download_pic(post):
+    file_b = Request.urlopen(post.get_url()).read()
+    filepath = os.path.join('c:/filthy_pics', str(post.get_id()) + '.jpg')
+    with open(filepath, 'wb') as file:
+        file.write(file_b)
+        file.close()
 
 
 def parse_result(res):
@@ -83,3 +93,5 @@ def statistics(count):
 
 
 #statistics(1)
+p = get_posts(1)
+download_pic(next(iter(p.values())))
