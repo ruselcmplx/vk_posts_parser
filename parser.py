@@ -66,7 +66,7 @@ def create_post_objs(arr):
         if pic_src:
             pic_src = pic_src[0].get('photo', None)
             if pic_src:
-                pic_src = pic_src.get('src_xbig', None)
+                pic_src = pic_src.get('src_big', None)
         likes_count = post['likes']['count']
         post_obj = Post(id, pic_src, likes_count)
         post_objs[post['id']]=post_obj
@@ -93,5 +93,6 @@ def statistics(count):
 
 
 #statistics(1)
-#p = get_posts(1)
-#download_pic(next(iter(p.values())))
+ps = list(get_posts(1).values())
+for p in ps:
+    download_pic(p)
