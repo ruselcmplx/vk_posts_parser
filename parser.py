@@ -37,16 +37,30 @@ def download_pic(post):
         file.close()
 
 
-def parse_result(res):
-    parsed_obj = json.loads(res)['response']
-    return parsed_obj[1:]
+def download_pic_sorted(post):
+    file_b = Request.urlopen(post.get_url()).read()
+    count = post.get_likes_count()
+    if count < 2:
+        dest = DESTINATION_FOLDER + '/bad'
+    elif count < 6:
+        dest = DESTINATION_FOLDER + '/lame'
+    elif count < 16:
+       dest = DESTINATION_FOLDER + '/soso'
+    elif count < 32:
+       dest = DESTINATION_FOLDER + '/nice'
+    elif count < 256:
+       dest = DESTINATION_FOLDER + '/good'
+    filepath = os.path.join(dest, str(post.get_id()) + '.jpg')
+    with open(filepath, 'wb') as file:
+        file.write(file_b)
+        file.close()
 
 
 def get_result(offset=0):
     url = URL_TEMPLATE.format(owner_id=OWNER_ID, offset=offset, access_token=ACCESS_TOKEN)
     res = Request.urlopen(url).read()
-    res = parse_result(res.decode('utf-8'))
-    return res
+    parsed_obj = json.loads(res.decode('utf-8'))['response']
+    return parsed_obj[1:]
 
 
 def create_post_objs(arr):
@@ -85,15 +99,79 @@ def get_posts(hundreds_posts=POSTS_HUNDREDS_COUNT):
     return res
 
 
-def statistics(count):
-    p = get_posts(count)
+def speed(count):
     dt = time.time() - START_TIME
     print("%f seconds" % (dt))
-    print(str(len(p)) + ' posts parsed')
-    print('speed: ' + str(round(len(p)/dt, 2)) + 'post/sec')
+    #print(str(len(p)) + ' posts parsed')
+    print('speed: ' + str(round(count/dt, 2)) + 'post/sec')
+
+
+def statistics(posts):
+    maxlike = 0
+    top_post = []
+    minlike = 1
+    lame_post = []
+    k = 0
+    categories = {
+        0:2,
+        1:6,
+        2:16,
+        3:32,
+        4:256
+    }
+    cat_count = {
+        0:0,1:0,2:0,3:0,4:0
+    }
+    #for p in posts:
+    #    if p.get_likes_count() > maxlike:
+    #        maxlike = p.get_likes_count()
+    #        top_post.append(p.get_id())
+    #    if p.get_likes_count() < minlike:
+    #        minlike = p.get_likes_count()
+    #        lame_post.append(p.get_id())
+    #    k+=1
+    for p in posts:
+        count = p.get_likes_count()
+        if count < categories[0]:
+            cat_count[0] += 1
+            continue
+        if count < categories[1]:
+            cat_count[1] += 1
+            continue
+        if count < categories[2]:
+            cat_count[2] += 1
+            continue
+        if count < categories[3]:
+            cat_count[3] += 1
+            continue
+        if count < categories[4]:
+            cat_count[4] += 1
+            continue
+
+    print('Likes count by cathegory:')
+    print('<2: ' + str(cat_count[0]))
+    print('<6: ' + str(cat_count[1]))
+    print('<8: ' + str(cat_count[2]))
+    print('<32: ' + str(cat_count[3]))
+    print('<256: ' + str(cat_count[4]))
+    #speed(k)
+    #print('Posts count: ' + str(k))
+    #print('Maximum like value: ' + str(maxlike))
+    #print('Top posts:')
+    #print(top_post)
+    #print('Minimum like value: ' + str(minlike))
+    #print('Lame posts:')
+    #print(lame_post)
 
 
 #statistics(1)
-ps = list(get_posts(1).values())
+print('GETTING POSTS_____________________________')
+ps = list(get_posts().values())
+speed(len(ps))
+#print('CALCULATING LIKES COUNT___________________')
+#statistics(ps)
+print('DOWNLOADING PICS__________________________')
 for p in ps:
     download_pic(p)
+print('SUCC ESS__________________________________')
+
