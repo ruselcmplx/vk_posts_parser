@@ -5,8 +5,8 @@ import os.path
 
 
 START_TIME = time.time()
-ACCESS_TOKEN = '88af5ea888af5ea888af5ea82a88f2a4d4888af88af5ea8d1322cecc0b538ff68c8b593'
-OWNER_ID = '91709075'
+ACCESS_TOKEN = '{TOKEN}'
+OWNER_ID = '{OWNER_ID}'
 POSTS_HUNDREDS_COUNT = 106
 URL_TEMPLATE = 'https://api.vk.com/method/wall.get?owner_id=-{owner_id}&offset={offset}&count=100&access_token={access_token}&v=V'
 DESTINATION_FOLDER = 'c:/filthy_pics'
